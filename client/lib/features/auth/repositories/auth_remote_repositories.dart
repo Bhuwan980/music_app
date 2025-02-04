@@ -30,8 +30,8 @@ class AuthRemoteRepositories {
               'name': name,
             },
           ));
-      print(response.body);
-      print(response.statusCode);
+      // print(response.body);
+      //print(response.statusCode);
       if (response.statusCode == 201) {
         return {'success': true};
       } else {
@@ -64,15 +64,32 @@ class AuthRemoteRepositories {
           },
         ),
       );
-      print(response.body);
+      final responseBody = jsonDecode(response.body);
+      //print(response.body);
       if (response.statusCode == 200) {
-        return {'success': true};
+        return {
+          'success': true,
+          'token': responseBody['token'],
+          'user': responseBody['user']
+        };
       } else {
         return {
           'success': false,
           'errorMessage': jsonDecode(response.body)['detail']
         };
       }
+    } catch (e) {
+      return {'success': false, 'errorMessage': 'An error occurred: $e'};
+    }
+  }
+
+  Future<Map<String, dynamic>> logout() async {
+    final url = Uri.parse('http://localhost:8000/users/logout');
+    try {
+      final response = await http.post(url, headers: {
+        'Content-Type': 'application/json',
+      });
+      return {'success': true, "message": jsonDecode(response.body)};
     } catch (e) {
       return {'success': false, 'errorMessage': 'An error occurred: $e'};
     }

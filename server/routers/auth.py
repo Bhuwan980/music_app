@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
+import jwt
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-
+from fastapi.security import OAuth2PasswordBearer
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 from pydantic_schemas.auth import LoginUserModel, SignupUserModel
 
 from database import get_db
@@ -33,13 +35,20 @@ def create_user(user: SignupUserModel, db: Session = Depends(get_db)):
 @router.post("/login")
 def login(user: LoginUserModel, db: Session = Depends(get_db)):
     # Query the user by email
-    db_user = db.query(User).filter(User.email == user.email and User.password == user.password).first()
-    
+    #db_user = db.query(User).filter(User.email == user.email and User.password == user.password).first()
+    db_user = db.query(User).filter((User.email == user.email) & (User.password == user.password)).first()
     # If the user doesn't exist or the password is incorrect
     if not db_user: #or not verify_password(db_user.password, user.password):
         raise HTTPException(status_code=400, detail="Invalid Credentials!")
 
-    return {"message": "Login successful"}
+    token = jwt.encode({'id': db_user.id}, 'secret_key')
+    print(token)
+    return {'token': token, 'user': db_user}
+
+
+@router.post("/logout")
+def logout():
+    return {"message": "Logged out successfully"}
 
 # Endpoint to Get a User by ID
 @router.get("/{user_id}")

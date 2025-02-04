@@ -118,7 +118,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                                   password: _passwordController.text,
                                 );
 
-                                if (response['success'] == true) {
+                                if (response['success'] == true && mounted) {
                                   // Navigate to the login page
                                   Navigator.pushReplacement(
                                     context,
@@ -127,10 +127,8 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                                             const LoginPage()),
                                   );
                                 } else {
-                                  final errorMessage = response != null
-                                      ? response['errorMessage'] ??
-                                          'Unknown error'
-                                      : 'Unexpected error occurred';
+                                  final errorMessage =
+                                      'Unexpected error occurred';
 
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
