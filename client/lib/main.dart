@@ -43,6 +43,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     if (_isChecking) {
       // Show a loading screen while checking auth status
       return MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: AppTheme.darkThemeMode,
         home: Scaffold(
           body: Center(child: CircularProgressIndicator()),
@@ -52,6 +53,7 @@ class _MyAppState extends ConsumerState<MyApp> {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: AppTheme.darkThemeMode,
       home: _isLoggedIn ? const HomePage() : const LoginPage(),
     );
   }
