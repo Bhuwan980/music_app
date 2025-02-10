@@ -1,4 +1,4 @@
-import 'package:client/features/home/view/pages/widgets/card_container.dart';
+import 'package:client/features/home/view/widgets/card_container.dart';
 import 'package:flutter/material.dart';
 
 class CustomSideScrollableWidget extends StatelessWidget {

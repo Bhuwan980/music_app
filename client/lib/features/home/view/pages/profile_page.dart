@@ -1,6 +1,6 @@
-import 'package:client/features/home/view/pages/widgets/card_container.dart';
-import 'package:client/features/home/view/pages/widgets/custom_side_scrollable_widget.dart';
-import 'package:client/features/home/view/pages/widgets/info_box.dart';
+import 'package:client/features/home/view/widgets/card_container.dart';
+import 'package:client/features/home/view/widgets/custom_side_scrollable_widget.dart';
+import 'package:client/features/home/view/widgets/info_box.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -9,6 +9,20 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.settings),
+          )
+        ],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 30),
         child: const ProfileContent(),

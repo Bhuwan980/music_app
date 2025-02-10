@@ -1,11 +1,9 @@
 import 'package:client/core/theme/app_pallet.dart';
-import 'package:client/features/auth/modelview/auth_viewmodel.dart';
 import 'package:client/features/home/view/pages/add_song.dart';
 import 'package:client/features/home/view/pages/landing_page.dart';
-import 'package:client/features/home/view/pages/playlist_page.dart';
-import 'package:client/features/home/view/pages/profile_page.dart';
+import 'package:client/features/home/view/pages/library_page.dart';
 import 'package:client/features/home/view/pages/search_page.dart';
-import 'package:client/features/home/view/pages/widgets/sliding_drawer.dart';
+import 'package:client/features/home/view/widgets/sliding_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -24,8 +22,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     LandingPage(),
     SearchPage(),
     AddSong(),
-    PlaylistPage(),
-    ProfilePage(),
+    LibraryPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -57,39 +54,16 @@ class _HomePageState extends ConsumerState<HomePage> {
         children: [
           Scaffold(
             appBar: AppBar(
-              leading: _selectedIndex == 4
-                  ? IconButton(
-                      icon: const Icon(Icons.notifications),
-                      onPressed: () => print("🔔 Notification Clicked"),
-                    )
-                  : GestureDetector(
-                      onTap: _toggleDrawer,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: const CircleAvatar(
-                          radius: 18,
-                          backgroundImage:
-                              AssetImage('assets/images/image.png'),
-                        ),
-                      ),
-                    ),
-              actions: _selectedIndex == 4
-                  ? [
-                      IconButton(
-                        icon: const Icon(Icons.settings),
-                        onPressed: () => print("⚙️ Settings Clicked"),
-                      ),
-                    ]
-                  : [
-                      IconButton(
-                        icon: const Icon(Icons.logout),
-                        onPressed: () {
-                          final authViewModel =
-                              ref.read(authViewModelProvider.notifier);
-                          authViewModel.logout(context);
-                        },
-                      ),
-                    ],
+              leading: GestureDetector(
+                onTap: _toggleDrawer,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: const CircleAvatar(
+                    radius: 18,
+                    backgroundImage: AssetImage('assets/images/image.png'),
+                  ),
+                ),
+              ),
             ),
             body: _pages[_selectedIndex],
             bottomNavigationBar: BottomNavigationBar(
@@ -119,11 +93,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                   icon: Icon(Icons.list_outlined),
                   activeIcon: Icon(Icons.list),
                   label: 'Playlist',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.person_outline),
-                  activeIcon: Icon(Icons.person),
-                  label: 'Profile',
                 ),
               ],
             ),

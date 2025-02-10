@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:client/core/theme/app_pallet.dart';
-import 'package:client/features/home/view/pages/widgets/custom_button.dart';
+import 'package:client/features/home/view/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
