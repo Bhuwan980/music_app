@@ -1,5 +1,7 @@
 import 'package:client/features/auth/repositories/auth_remote_repositories.dart';
-import 'package:client/features/auth/repositories/auth_local_repositories.dart'; // Import local auth repo
+import 'package:client/features/auth/repositories/auth_local_repositories.dart';
+import 'package:client/features/auth/view/pages/login_page.dart';
+import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_viewmodel.g.dart';
@@ -16,54 +18,66 @@ class AuthViewModel extends _$AuthViewModel {
     return null;
   }
 
-// login
+  // ✅ Login
   Future<Map<String, dynamic>> logIn({
     required String email,
     required String password,
   }) async {
     state = const AsyncValue.loading();
-    print('logiin))in');
     try {
       final response =
           await _remoteRepositories.logIn(email: email, password: password);
+
       if (response['success'] == true) {
         final token = response['token'];
         if (token != null) {
           await _localRepositories.saveToken(token);
         }
       }
+
       state = AsyncValue.data(response);
-      print('$response -------');
       return response;
     } catch (error, stackTrace) {
-      state = AsyncValue.error('Invalid credentials', stackTrace);
-      throw Exception('Invalid credentials');
+      state = AsyncValue.error(
+          "Login failed. Please check credentials.", stackTrace);
+      throw Exception("Login failed. Please check credentials.");
     }
   }
 
-  Future<Map<String, dynamic>> logout() async {
+  Future<void> logout(BuildContext context) async {
+    state = AsyncValue.loading();
+
     try {
-      state = AsyncValue.loading();
-      final response = await _remoteRepositories.logout(); // Add `await` here
-      if (response['success'] == true) {
-        await _localRepositories.removeToken(); // Clear the token locally
-        state = AsyncValue.data(response);
-        return response;
+      final token = await _localRepositories.getToken();
+      if (token != null) {
+        final response = await _remoteRepositories.logout(token);
+        print("Logout API Response: $response");
       }
-    } catch (e, stackTrace) {
-      state = AsyncValue.error(e, stackTrace);
-      throw Exception("Couldn't logout. Please try again later.");
+
+      await _localRepositories.removeToken(); // Clear local token
+
+      // ✅ Redirect user to LoginPage after logout
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+        (route) => false,
+      );
+
+      state = AsyncValue.data({"success": true});
+    } catch (error, stackTrace) {
+      state =
+          AsyncValue.error("Couldn't logout. Please try again.", stackTrace);
+      throw Exception("Couldn't logout. Please try again.");
     }
-    return {};
   }
 
+  // ✅ Check if user is logged in
   Future<bool> isLoggedIn() async {
-    final token = await _localRepositories
-        .getToken(); // Retrieve token from local storage
-    return token != null; // If token exists, return true
+    final token = await _localRepositories.getToken();
+    return token != null && token.isNotEmpty; // Ensure valid token
   }
 
-//signup
+  // ✅ Signup
   Future<Map<String, dynamic>> signUp({
     required String email,
     required String password,
@@ -76,8 +90,9 @@ class AuthViewModel extends _$AuthViewModel {
       state = AsyncValue.data(response);
       return response;
     } catch (error, stackTrace) {
-      state = AsyncValue.error('User already exists!', stackTrace);
-      throw Exception('User already exists!');
+      state = AsyncValue.error(
+          "Signup failed. User may already exist.", stackTrace);
+      throw Exception("Signup failed. User may already exist.");
     }
   }
 }

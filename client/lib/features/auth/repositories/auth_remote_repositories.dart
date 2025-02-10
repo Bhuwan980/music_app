@@ -83,13 +83,26 @@ class AuthRemoteRepositories {
     }
   }
 
-  Future<Map<String, dynamic>> logout() async {
+  Future<Map<String, dynamic>> logout(String token) async {
     final url = Uri.parse('http://localhost:8000/users/logout');
+
     try {
-      final response = await http.post(url, headers: {
-        'Content-Type': 'application/json',
-      });
-      return {'success': true, "message": jsonDecode(response.body)};
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({"token": token}), // ✅ Fixed JSON encoding
+      );
+
+      if (response.statusCode == 200) {
+        return {'success': true, "message": jsonDecode(response.body)};
+      } else {
+        return {
+          'success': false,
+          'errorMessage': "Logout failed: ${response.body}"
+        };
+      }
     } catch (e) {
       return {'success': false, 'errorMessage': 'An error occurred: $e'};
     }

@@ -1,0 +1,1 @@
+SECRET_KEY = 'kast_xa_soltee_hal_khabar'
