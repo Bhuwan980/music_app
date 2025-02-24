@@ -1,6 +1,7 @@
+import 'dart:convert';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 part 'auth_local_repositories.g.dart';
 
@@ -10,40 +11,51 @@ AuthLocalRepositories authLocalRepositories(Ref ref) {
 }
 
 class AuthLocalRepositories {
-  static const String _tokenKey = 'auth_token';
-  SharedPreferences? _prefs; // Nullable to avoid late initialization error
+  final String _tokenKey = "auth_token";
+  final String _userDataKey = "user_data"; // ✅ Store user data
 
-  // Ensure SharedPreferences is initialized
-  Future<void> _ensureInitialized() async {
-    _prefs ??= await SharedPreferences.getInstance();
-  }
-
-  // Store Token
+  // ✅ Save Token
   Future<void> saveToken(String token) async {
-    await _ensureInitialized();
-    print('hey man');
-    if (_prefs != null) {
-      await _prefs!.setString(_tokenKey, token);
-      print('Token saved: $token');
-    } else {
-      print('SharedPreferences not initialized');
-    }
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_tokenKey, token);
   }
 
-  // Get Token
+  // ✅ Get Token
   Future<String?> getToken() async {
-    await _ensureInitialized();
-    return _prefs?.getString(_tokenKey); // Avoid direct access to _prefs!
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_tokenKey);
   }
 
-  // Remove Token (Logout)
+  // ✅ Remove Token
   Future<void> removeToken() async {
-    await _ensureInitialized();
-    _prefs?.remove(_tokenKey); // Null-safe check
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_tokenKey);
   }
 
-  // Check if User is Logged In
+  // ✅ Save User Data (Store user info locally)
+  Future<void> saveUserData(Map<String, dynamic> user) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_userDataKey, jsonEncode(user));
+  }
+
+  // ✅ Get User Data
+  Future<Map<String, dynamic>?> getUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userDataString = prefs.getString(_userDataKey);
+    if (userDataString != null) {
+      return jsonDecode(userDataString);
+    }
+    return null;
+  }
+
+  // ✅ Remove User Data (Clear user info on logout)
+  Future<void> removeUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_userDataKey);
+  }
+
   Future<bool> isLoggedIn() async {
-    return (await getToken()) != null;
+    final token = await getToken();
+    return token != null && token.isNotEmpty;
   }
 }

@@ -1,8 +1,10 @@
 import 'dart:io';
-import 'package:client/core/theme/app_pallet.dart';
-import 'package:client/features/home/view/widgets/custom_button.dart';
+import 'package:client/core/theme/app_pallet.dart'; // Make sure this path is correct
+import 'package:client/features/home/view/widgets/custom_button.dart'; // Make sure this path is correct
+import 'package:client/features/home/view/widgets/widgets_search_page/dotted_border_box.dart'; // Make sure this path is correct
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AddSong extends StatefulWidget {
   const AddSong({super.key});
@@ -13,7 +15,6 @@ class AddSong extends StatefulWidget {
 
 class _AddSongState extends State<AddSong> {
   final TextEditingController _songNameController = TextEditingController();
-  final TextEditingController _artistController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _lyricsController = TextEditingController();
 
@@ -21,30 +22,49 @@ class _AddSongState extends State<AddSong> {
   File? _musicFile;
   final _formKey = GlobalKey<FormState>();
 
-  Future<void> _pickImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
+  Future<void> _pickFile(FileType type, String permissionMessage) async {
+    var status =
+        await Permission.storage.request(); // Request storage permission first
+    if (type == FileType.image) {
+      status = await Permission.photos.request();
     }
-  }
 
-  Future<void> _pickMusic() async {
-    final pickedFile =
-        await ImagePicker().pickVideo(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _musicFile = File(pickedFile.path);
-      });
+    if (status.isGranted) {
+      try {
+        FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: type,
+        );
+
+        if (result != null && result.files.isNotEmpty) {
+          setState(() {
+            if (type == FileType.image) {
+              _image = File(result.files.single.path!);
+            } else if (type == FileType.audio) {
+              _musicFile = File(result.files.single.path!);
+            }
+          });
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No file selected')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error picking file: $e')),
+        );
+      }
+    } else if (status.isPermanentlyDenied) {
+      openAppSettings(); // Import 'package:permission_handler/permission_handler.dart';
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(permissionMessage)),
+      );
     }
   }
 
   @override
   void dispose() {
     _songNameController.dispose();
-    _artistController.dispose();
     _descriptionController.dispose();
     _lyricsController.dispose();
     super.dispose();
@@ -53,6 +73,16 @@ class _AddSongState extends State<AddSong> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Pallete.backgroundColor,
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back)),
+        title: const Text('Create Song'),
+      ),
+      backgroundColor: Pallete.backgroundColor, // Make sure Pallete is defined
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -60,7 +90,6 @@ class _AddSongState extends State<AddSong> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                // Image Picker Section
                 _image != null
                     ? Stack(
                         children: [
@@ -82,20 +111,20 @@ class _AddSongState extends State<AddSong> {
                               },
                               child: Container(
                                 decoration: const BoxDecoration(
-                                  color: Pallete.transparentColor,
+                                  color: Colors.black45,
                                   shape: BoxShape.circle,
                                 ),
-                                child: const Icon(
-                                  Icons.close,
-                                ),
+                                child: const Icon(Icons.close,
+                                    color: Colors.white),
                               ),
                             ),
                           ),
                         ],
                       )
                     : GestureDetector(
-                        onTap: _pickImage,
-                        child: DottedBorderBox(
+                        onTap: () => _pickFile(
+                            FileType.image, "Permission Denied for Photos"),
+                        child: const DottedBorderBox(
                             icon: Icons.image, text: "Upload Cover"),
                       ),
                 const SizedBox(height: 20),
@@ -105,6 +134,7 @@ class _AddSongState extends State<AddSong> {
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
+                              color: Colors.grey[900],
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Row(
@@ -116,6 +146,7 @@ class _AddSongState extends State<AddSong> {
                                   child: Text(
                                     _musicFile!.path.split('/').last,
                                     overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(color: Colors.white),
                                   ),
                                 ),
                                 GestureDetector(
@@ -125,7 +156,7 @@ class _AddSongState extends State<AddSong> {
                                     });
                                   },
                                   child: const Icon(Icons.close,
-                                      color: Pallete.transparentColor),
+                                      color: Colors.white),
                                 ),
                               ],
                             ),
@@ -133,39 +164,56 @@ class _AddSongState extends State<AddSong> {
                         ],
                       )
                     : GestureDetector(
-                        onTap: _pickMusic,
-                        child: DottedBorderBox(
+                        onTap: () => _pickFile(
+                            FileType.audio, "Permission Denied for Storage"),
+                        child: const DottedBorderBox(
                             icon: Icons.music_note, text: "Upload Song"),
                       ),
                 const SizedBox(height: 10),
-                // Song Name
+                // ... Your existing CustomTextField widgets
                 CustomTextField(
                     hintText: 'Song Name',
                     icon: Icons.music_note,
                     controller: _songNameController),
                 const SizedBox(height: 10),
-                // Artist Name
-                CustomTextField(
-                    hintText: 'Artist',
-                    icon: Icons.person,
-                    controller: _artistController),
-                const SizedBox(height: 10),
-                // Description
                 CustomTextField(
                     hintText: 'Description',
                     icon: Icons.description,
                     controller: _descriptionController),
                 const SizedBox(height: 10),
-                // Lyrics
                 CustomTextField(
                     hintText: 'Lyrics',
                     icon: Icons.library_music,
                     controller: _lyricsController,
                     maxLines: 4),
-
                 const SizedBox(height: 20),
 
-                CustomButton(buttonText: 'Add Song', onPressed: () {})
+                CustomButton(
+                  buttonText: 'Add Song',
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      if (_image == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Please upload a cover image.')),
+                        );
+                        return;
+                      }
+                      if (_musicFile == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Please upload an audio file.')),
+                        );
+                        return;
+                      }
+
+                      // ... Your existing code to handle song upload
+                      print("🎵 Song Uploaded: ${_songNameController.text}");
+                      print("📝 Description: ${_descriptionController.text}");
+                      print("🎶 Lyrics: ${_lyricsController.text}");
+                    }
+                  },
+                )
               ],
             ),
           ),
@@ -175,8 +223,10 @@ class _AddSongState extends State<AddSong> {
   }
 }
 
-// Custom TextField Widget
+// ... Your existing CustomTextField, CustomButton, DottedBorderBox, and Pallete classes
 class CustomTextField extends StatelessWidget {
+  // Example implementation
+  // ... (Your CustomTextField code)
   final String hintText;
   final IconData icon;
   final TextEditingController controller;
@@ -206,35 +256,6 @@ class CustomTextField extends StatelessWidget {
         }
         return null;
       },
-    );
-  }
-}
-
-// Dotted Border Box Widget
-class DottedBorderBox extends StatelessWidget {
-  final IconData icon;
-  final String text;
-
-  const DottedBorderBox({required this.icon, required this.text, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 120,
-      decoration: BoxDecoration(
-        border: Border.all(
-            color: Colors.grey, style: BorderStyle.solid, width: 1.5),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 40, color: Colors.grey),
-          const SizedBox(height: 5),
-          Text(text, style: const TextStyle(color: Colors.grey)),
-        ],
-      ),
     );
   }
 }

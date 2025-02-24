@@ -11,12 +11,14 @@ AuthRemoteRepositories authRemoteRepositories(Ref ref) {
 }
 
 class AuthRemoteRepositories {
+  final domainAddress = "http://127.0.0.1:8000";
+
   Future<Map<String, dynamic>> signUp({
     required String email,
     required String password,
     required String name,
   }) async {
-    final url = Uri.parse('http://localhost:8000/users/signup');
+    final url = Uri.parse('$domainAddress/users/signup');
 
     try {
       final response = await http.post(url,
@@ -49,7 +51,7 @@ class AuthRemoteRepositories {
     required String email,
     required String password,
   }) async {
-    final url = Uri.parse('http://localhost:8000/users/login');
+    final url = Uri.parse('$domainAddress/users/login');
 
     try {
       final response = await http.post(
@@ -84,7 +86,7 @@ class AuthRemoteRepositories {
   }
 
   Future<Map<String, dynamic>> logout(String token) async {
-    final url = Uri.parse('http://localhost:8000/users/logout');
+    final url = Uri.parse('$domainAddress/users/logout');
 
     try {
       final response = await http.post(
@@ -102,6 +104,28 @@ class AuthRemoteRepositories {
           'success': false,
           'errorMessage': "Logout failed: ${response.body}"
         };
+      }
+    } catch (e) {
+      return {'success': false, 'errorMessage': 'An error occurred: $e'};
+    }
+  }
+
+  Future<Map<String, dynamic>> getUserData(String token) async {
+    final url = Uri.parse('$domainAddress/users/me');
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return {'success': true, "user": jsonDecode(response.body)};
+      } else {
+        return {'success': false, 'errorMessage': "Failed to get user data"};
       }
     } catch (e) {
       return {'success': false, 'errorMessage': 'An error occurred: $e'};

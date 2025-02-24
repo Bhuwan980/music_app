@@ -7,6 +7,7 @@ class AppTheme {
       backgroundColor:
           Pallete.borderColor, // Change this to your preferred color
     ),
+    appBarTheme: AppBarTheme(backgroundColor: Pallete.backgroundColor),
     scaffoldBackgroundColor: Pallete.backgroundColor,
     inputDecorationTheme: InputDecorationTheme(
       focusedBorder: OutlineInputBorder(

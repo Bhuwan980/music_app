@@ -45,7 +45,9 @@ dependencies:
   riverpod_annotation: ^2.6.1
   shared_preferences: ^2.5.1
   image_picker: ^1.1.2
-  file_picker: ^8.3.1
+  file_picker: ^8.3.5
+  permission_handler: ^11.3.1
+  audioplayers: ^6.2.0
 
   
 
@@ -81,6 +83,19 @@ flutter:
     - assets/images/signin_image.png
     - assets/images/bhuwan.jpeg
     - assets/images/image.png
+    - assets/images/0.png
+    - assets/images/1.png
+    - assets/images/2.png
+    - assets/images/3.png
+    - assets/images/4.png
+    - assets/images/5.png
+    - assets/images/6.png
+    - assets/images/7.png
+    - assets/images/9.png
+    - assets/images/10.png
+    - assets/images/11.png
+    - assets/images/12.png
+    - assets/images/13.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

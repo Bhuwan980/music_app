@@ -39,7 +39,7 @@ class AuthViewModel extends _$AuthViewModel {
       return response;
     } catch (error, stackTrace) {
       state = AsyncValue.error(
-          "Login failed. Please check credentials.", stackTrace);
+          "Login failed. Please check credentials@@@@@@@@.", stackTrace);
       throw Exception("Login failed. Please check credentials.");
     }
   }

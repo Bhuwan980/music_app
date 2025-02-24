@@ -1,3 +1,4 @@
+import 'package:client/core/theme/app_pallet.dart';
 import 'package:flutter/material.dart';
 
 class LibraryPage extends StatelessWidget {
@@ -6,6 +7,7 @@ class LibraryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Pallete.backgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -13,27 +15,27 @@ class LibraryPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildLibraryItem(
-                image: "assets/images/image.png",
+                image: "assets/images/1.png",
                 title: "Liked Songs",
                 onTap: () {},
               ),
               _buildLibraryItem(
-                image: "assets/images/image.png",
+                image: "assets/images/2.png",
                 title: "Playlists",
                 onTap: () {},
               ),
               _buildLibraryItem(
-                image: "assets/images/image.png",
+                image: "assets/images/3.png",
                 title: "Podcasts",
                 onTap: () {},
               ),
               _buildLibraryItem(
-                image: "assets/images/image.png",
+                image: "assets/images/4.png",
                 title: "Mixes",
                 onTap: () {},
               ),
               _buildLibraryItem(
-                image: "assets/images/image.png",
+                image: "assets/images/5.png",
                 title: "Shows",
                 onTap: () {},
               ),

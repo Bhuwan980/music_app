@@ -1,6 +1,8 @@
+import 'package:client/core/theme/app_pallet.dart';
 import 'package:client/features/home/view/pages/profile_page.dart';
 import 'package:client/features/home/view/widgets/widgets_search_page/browse_card.dart';
 import 'package:client/features/home/view/widgets/widgets_search_page/discover_card.dart';
+//import 'package:client/features/home/view/widgets/widgets_search_page/section_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,6 +17,7 @@ class SearchPage extends ConsumerWidget {
     final searchController = TextEditingController(text: searchQuery);
 
     return Scaffold(
+      backgroundColor: Pallete.backgroundColor,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(12.0),
         child: Column(
@@ -80,14 +83,12 @@ class SearchPage extends ConsumerWidget {
                 scrollDirection: Axis.horizontal,
                 children: const [
                   DiscoverCard(
-                      title: "Trending Now",
-                      image: "assets/images/bhuwan.jpeg"),
+                      title: "Trending Now", image: "assets/images/7.png"),
                   DiscoverCard(
-                      title: "New Releases",
-                      image: "assets/images/bhuwan.jpeg"),
+                      title: "New Releases", image: "assets/images/4.png"),
                   DiscoverCard(
                     title: "Top Charts",
-                    image: "assets/images/bhuwan.jpeg",
+                    image: "assets/images/3.png",
                   ),
                 ],
               ),

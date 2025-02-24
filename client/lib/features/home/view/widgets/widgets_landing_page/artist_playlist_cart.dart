@@ -1,3 +1,4 @@
+import 'package:client/core/theme/app_pallet.dart';
 import 'package:flutter/material.dart';
 
 class ArtistPlaylistCard extends StatelessWidget {
@@ -15,27 +16,24 @@ class ArtistPlaylistCard extends StatelessWidget {
     return Container(
       height: 90, // Fixed height for uniform design
       decoration: BoxDecoration(
-          color: Colors.grey[900],
-          borderRadius: const BorderRadius.all(Radius.circular(12))),
+          color: Pallete.greyColor,
+          borderRadius: const BorderRadius.all(Radius.circular(6))),
       child: Row(
         children: [
-          // ✅ Image covering full height, but taking less width
+          // Image covering full height, but taking less width
           ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(12),
-              bottomLeft: Radius.circular(12),
-            ),
+            borderRadius: const BorderRadius.all(Radius.circular(4)),
             child: Image.asset(
               image,
-              width: 70, // Adjusted width (1:1 ratio for square image)
-              height: double.infinity, // ✅ Full height of the container
-              fit: BoxFit.cover, // Ensures the image fills the space
+              width: 70,
+              height: double.infinity,
+              fit: BoxFit.cover,
             ),
           ),
 
-          const SizedBox(width: 10), // Space between image and text
+          const SizedBox(width: 10),
 
-          // ✅ Title (Flexible to avoid overflow)
+          //  Title (Flexible to avoid overflow)
           Expanded(
             child: Text(
               title,

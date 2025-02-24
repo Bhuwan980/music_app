@@ -1,3 +1,4 @@
+import 'package:client/core/theme/app_pallet.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -6,7 +7,9 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Pallete.backgroundColor,
       appBar: AppBar(
+        backgroundColor: Pallete.backgroundColor,
         title: const Text('Settings'),
         leading: IconButton(
             onPressed: () {

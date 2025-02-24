@@ -1,8 +1,11 @@
+import 'package:client/core/theme/app_pallet.dart';
+import 'package:client/features/home/view/pages/play_song.dart';
 import 'package:client/features/home/view/pages/profile_page.dart';
 import 'package:client/features/home/view/widgets/widgets_landing_page/album_card.dart';
 import 'package:client/features/home/view/widgets/widgets_landing_page/artist_playlist_cart.dart';
 import 'package:client/features/home/view/widgets/widgets_landing_page/recent_card.dart';
 import 'package:client/features/home/view/widgets/widgets_landing_page/top_mix_card.dart';
+//import 'package:client/features/home/view/widgets/widgets_search_page/section_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,6 +15,7 @@ class LandingPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
+      backgroundColor: Pallete.backgroundColor,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(12.0),
         child: Column(
@@ -31,8 +35,8 @@ class LandingPage extends ConsumerWidget {
               ),
               itemCount: 8, // 8 cards
               itemBuilder: (context, index) {
-                return const ArtistPlaylistCard(
-                  image: "assets/images/image.png",
+                return ArtistPlaylistCard(
+                  image: "assets/images/${index.toString()}.png",
                   title: "Artist Name",
                 );
               },
@@ -53,8 +57,8 @@ class LandingPage extends ConsumerWidget {
               ),
               itemCount: 4, // Adjust as needed
               itemBuilder: (context, index) {
-                return const AlbumCard(
-                  image: "assets/images/bhuwan.jpeg",
+                return AlbumCard(
+                  image: "assets/images/${index.toString()}.png",
                   songTitle: "Song Name",
                   albumName: "Album - Album Name",
                 );
@@ -70,14 +74,10 @@ class LandingPage extends ConsumerWidget {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: const [
-                  TopMixCard(
-                      image: "assets/images/bhuwan.jpeg", title: "Mix 1"),
-                  TopMixCard(
-                      image: "assets/images/bhuwan.jpeg", title: "Mix 2"),
-                  TopMixCard(
-                      image: "assets/images/bhuwan.jpeg", title: "Mix 3"),
-                  TopMixCard(
-                      image: "assets/images/bhuwan.jpeg", title: "Mix 4"),
+                  TopMixCard(image: "assets/images/1.png", title: "Mix 1"),
+                  TopMixCard(image: "assets/images/2.png", title: "Mix 2"),
+                  TopMixCard(image: "assets/images/3.png", title: "Mix 3"),
+                  TopMixCard(image: "assets/images/4.png", title: "Mix 4"),
                 ],
               ),
             ),
@@ -88,10 +88,46 @@ class LandingPage extends ConsumerWidget {
             const SizedBox(height: 10),
             Column(
               children: List.generate(5, (index) {
-                return const RecentCard(
-                  image: "assets/images/image.png",
-                  songTitle: "Recent Song",
-                  artistName: "Artist Name",
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return PlaySong(
+                              currentIndex: index,
+                              playlist: [
+                                {
+                                  "songTitle": "Shape of You",
+                                  "artistName": "Ed Sheeran",
+                                  "songUrl": "https://www.example.com/song.mp3",
+                                },
+                                {
+                                  "songTitle": "Blinding Lights",
+                                  "artistName": "The Weeknd",
+                                  "songUrl":
+                                      "https://www.example.com/blinding_lights.mp3",
+                                },
+                                {
+                                  "songTitle": "Levitating",
+                                  "artistName": "Dua Lipa",
+                                  "songUrl":
+                                      "https://www.example.com/levitating.mp3",
+                                },
+                              ],
+                              songTitle: 'Random Dude',
+                              artistName: 'Bhuwan',
+                              songUrl: '',
+                              coverImage: 'assets/images/1.png');
+                        },
+                      ),
+                    );
+                  },
+                  child: RecentCard(
+                    image: "assets/images/${index.toString()}.png",
+                    songTitle: "Recent Song",
+                    artistName: "Artist Name",
+                  ),
                 );
               }),
             ),

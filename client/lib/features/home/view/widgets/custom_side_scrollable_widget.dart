@@ -10,12 +10,13 @@ class CustomSideScrollableWidget extends StatelessWidget {
       height: 130,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 10,
+        itemCount: 4,
         itemBuilder: (context, index) {
+          int ind = index + 9;
           return Padding(
             padding: const EdgeInsets.only(right: 10),
             child: CardContainer(
-              image: AssetImage('assets/images/login_image.png'),
+              image: AssetImage('assets/images/$ind.png'),
               text: 'download Text',
               width: 120, // Square shape
               height: 120,

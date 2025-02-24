@@ -26,7 +26,21 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>This app needs access to your music library to allow you to select a song file.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs access to your camera to take a picture.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs access to your microphone to record or process audio.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs access to save images to your photo library.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to your photo library to allow you to select a cover image for your song.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -45,13 +59,15 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We need access to your photo library to upload an image.</string>
+	<key>UISupportsDocumentBrowser</key>
+	<true/>
 
-	<key>NSCameraUsageDescription</key>
-	<string>We need access to your camera to take a picture.</string>
+	<!-- ✅ Fixed `NSAppTransportSecurity` Structure -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 
-	<key>NSPhotoLibraryAddUsageDescription</key>
-    <string>We need access to save images to your photo library.</string>
 </dict>
 </plist>

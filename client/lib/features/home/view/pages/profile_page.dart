@@ -1,4 +1,7 @@
+import 'package:client/core/theme/app_pallet.dart';
+import 'package:client/features/home/view/pages/add_song.dart';
 import 'package:client/features/home/view/widgets/card_container.dart';
+import 'package:client/features/home/view/widgets/custom_button.dart';
 import 'package:client/features/home/view/widgets/custom_side_scrollable_widget.dart';
 import 'package:client/features/home/view/widgets/info_box.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +12,9 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //backgroundColor: Pallete.backgroundColor,
       appBar: AppBar(
+        backgroundColor: Pallete.backgroundColor,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -41,7 +46,7 @@ class ProfileContent extends StatelessWidget {
         // Profile Image at Center
         const CircleAvatar(
           radius: 50,
-          backgroundImage: AssetImage('assets/images/image.png'),
+          backgroundImage: AssetImage('assets/images/13.png'),
         ),
         const SizedBox(height: 10),
 
@@ -65,6 +70,14 @@ class ProfileContent extends StatelessWidget {
             InfoBox(value: "270", label: "Following"),
           ],
         ),
+        const SizedBox(height: 30),
+        CustomButton(
+            buttonText: 'Upload Song',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return const AddSong();
+              }));
+            }),
         const SizedBox(height: 30),
 
         //  Favorite Topics
@@ -117,7 +130,7 @@ class FavoriteTopicsList extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.only(right: 10),
             child: CardContainer(
-              image: AssetImage('assets/images/login_image.png'),
+              image: AssetImage('assets/images/$index.png'),
               text: 'Design text',
               width: 200, // Rectangular shape
               height: 120,
